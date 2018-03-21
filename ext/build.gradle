@@ -1,0 +1,27 @@
+apply plugin: 'java-library'
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+}
+
+sourceCompatibility = "1.7"
+targetCompatibility = "1.7"
+
+task finalTask {
+    doLast {
+        println 'dexing...'
+        exec {
+            commandLine ".././dx"\
+        , "--dex"\
+        , "--output=build/libs/extdex.jar"\
+        , "build/libs/ext.jar"
+        }
+        copy {
+            println 'copying jar to main module...'
+            from 'build/libs/extdex.jar'
+            into '../app/src/main/assets/jar/'
+        }
+    }
+}
+
+build.finalizedBy finalTask
